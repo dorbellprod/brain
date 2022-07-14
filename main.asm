@@ -16,7 +16,6 @@ section .data
 	test_program db "<+++++++++++++++++++++++++++++++++.>++++++++++.", 0
 
 section .bss
-	program resb	100
 	tape resb 		30000
 	tape_last equ tape + 29999
 section .text
@@ -93,15 +92,11 @@ stop:
 
 
 debug_log:
-	push rax
 	print msg, 8
-	pop rax
 	ret
 
 debug_log_2:
-	push rax
 	print msg_2, 8
-	pop rax
 	ret
 ; ----------------------- ; 
 ; ----------------------- ;
