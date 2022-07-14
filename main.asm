@@ -53,12 +53,12 @@ loop:
 _right:
 	inc rcx
 	cmp rcx, qword tape_last + 1
-	je _wrap_up
+	je _wrap_down
 	jmp _iterate
 _left:
 	dec rcx
 	cmp rcx, qword tape - 1
-	je _wrap_down
+	je _wrap_up
 	jmp _iterate
 
 ; TODO: Debug wrap labels, ensure they work.
