@@ -3,17 +3,17 @@
 ;;
 ;		Registers:
 ;			RAX				Instruction pointer
-;			BL				Working byte
+;			RBX				Working address
 ;			RCX				Tape pointer
 ;;
 %include "./subs.inc"
 
 section .data
-	msg db "WORKS!!", 10
-	msg_2 db "BRUHH!!", 10
+	msg db "WORKS!!", 10, 0
+	msg_2 db "BRUHH!!", 10, 0
 	debug_len equ $-msg
 
-	test_program db "<+++++++++++++++++++++++++++++++++.>++++++++++.", 0
+	test_program db ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.", 0
 
 section .bss
 	tape resb 		30000
@@ -35,6 +35,8 @@ interpreter:
 	mov rcx, tape
 
 loop:
+	cmp byte [rax], 18				; Skip if whitespace.
+	jl _iterate
 	cmp byte [rax], '>'
 	je _right
 	cmp byte [rax], '<'
@@ -46,6 +48,12 @@ loop:
 	je _minus
 	cmp byte [rax], '.'
 	je _print
+	cmp byte [rax], ','
+	je _input
+	cmp byte [rax], '['
+	je _loop_open
+	cmp byte [rax], ']'
+	je _loop_close
 
 	jmp stop
 
@@ -60,25 +68,50 @@ _left:
 	je _wrap_up
 	jmp _iterate
 
-; TODO: Debug wrap labels, ensure they work.
 _wrap_up:
 	mov rcx, tape_last
 	jmp _iterate
+
 _wrap_down:
 	mov rcx, tape
 	jmp _iterate
+
 _plus:
 	inc byte [rcx]
-	mov bl, byte [rcx]
 	jmp _iterate
+
 _minus:
 	dec byte [rcx]
-	mov bl, byte [rcx]
 	jmp _iterate
+
 _print:
-	mov bl, byte [rcx]
 	print rcx, 1
 	jmp _iterate
+
+_input:
+	push rax
+	push rcx
+
+	input rcx, 1
+
+	pop rcx
+	pop rax
+
+	jmp _iterate
+_loop_open:
+	mov rbx, 0							; Clear RBX for no reason
+	push rax 								; Push current pointer address
+	inc qword [rsp]					; ... + 1, meaning next instruction
+	jmp _iterate
+	
+_loop_close:
+	pop rbx									; Pop last loop addr into rbx
+	cmp byte [rcx], 0				; Check current cell
+	je _iterate							; If not 0, execute loop reset
+
+	mov rax, rbx						; Set IP to popped address
+	push rbx								; Push popped address
+	jmp loop								; Continue interpreting
 _iterate:
 	inc rax
 	cmp byte [rax], 0
