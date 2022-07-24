@@ -1,3 +1,2 @@
-# Yet Unnamed Brainfuck Interpreter
-## 😲 IN DEVELOPMENT 😲
-[Watch me make it!](https://youtube.com/DingDongDirt/live)
+# Dorbell's Brainfuck Interpter
+Most of development was streamed live on my [YouTube channel](https://youtube.com/DingDongDirt/live).
