@@ -9,10 +9,6 @@
 %include "./subs.inc"
 
 section .data
-	msg db "WORKS!!", 10, 0
-	msg_2 db "BRUHH!!", 10, 0
-	debug_len equ $-msg
-
 	test_program db ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.", 0
 
 section .bss
@@ -119,17 +115,3 @@ _iterate:
 	jmp loop
 stop:
 	exit
-
-; ---** SUBROUTINES **--- ; 
-; ----------------------- ;
-
-
-debug_log:
-	print msg, 8
-	ret
-
-debug_log_2:
-	print msg_2, 8
-	ret
-; ----------------------- ; 
-; ----------------------- ;
